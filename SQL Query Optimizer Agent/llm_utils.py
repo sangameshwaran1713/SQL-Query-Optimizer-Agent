@@ -76,3 +76,18 @@ def extract_sql_from_response(response: str):
     if match3:
         return match3.group(1).strip()
     return None
+
+
+def extract_estimated_improvement(response: str) -> str:
+    """Extract estimated performance improvement from LLM response."""
+    # Look for "Estimated improvement: ..." pattern
+    pattern = r"[Ee]stimated\s+[Ii]mprovement[:\s]+([^\n]+)"
+    match = re.search(pattern, response)
+    if match:
+        return match.group(1).strip()
+    # Look for "~X%" or "~Xx faster" patterns
+    pattern2 = r"(~?\d+[\-–]\d+%|~?\d+%|~?\d+[\-–]\d+x\s+faster|~?\d+x\s+faster)"
+    match2 = re.search(pattern2, response, re.IGNORECASE)
+    if match2:
+        return match2.group(1).strip()
+    return "See AI analysis for details"
