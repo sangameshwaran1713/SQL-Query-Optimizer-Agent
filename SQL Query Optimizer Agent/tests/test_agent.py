@@ -202,8 +202,3 @@ class TestAgentWithoutLLM:
         result = run_with_timing(sql, test_db)
         assert result["success"] is True
         assert result["row_count"] == 2
-```
-
-**Save as:** `tests/test_agent.py`
-
-2 files remaining — `README.md` and `ai_usage_note.md`. Ready for README?
