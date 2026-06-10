@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import OptimizerAgent from '../components/OptimizerAgent';
@@ -25,7 +24,7 @@ export default function OptimizerAgentPage() {
 
       <footer className="border-t border-brand-border bg-[#0F1420] py-4 mt-8">
         <p className="text-center text-xs text-brand-faint font-semibold">
-          © {new Date().getFullYear()} SQL Optimizer Agent — MIT License
+          © {new Date().getFullYear()} SQL Optimizer Agent
         </p>
       </footer>
     </div>

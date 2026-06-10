@@ -1,4 +1,3 @@
-import React from 'react';
 import { Database, Search, Cpu, BarChart2, CheckCircle2 } from 'lucide-react';
 
 const steps = [

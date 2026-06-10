@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowRight, Zap } from 'lucide-react';
 
 export default function Hero({ goToOptimizer }) {
@@ -49,15 +48,6 @@ export default function Hero({ goToOptimizer }) {
           </a>
         </div>
 
-        {/* Trust bar */}
-        <div className="mt-14 flex flex-wrap justify-center gap-6 text-xs text-brand-muted font-bold">
-          {['SQLite · EXPLAIN QUERY PLAN', 'Ollama (Qwen / Llama3)', '100% Local · No API Keys', 'Before & After Benchmarks'].map(t => (
-            <span key={t} className="flex items-center gap-1.5">
-              <span className="w-1 h-1 rounded-full bg-brand-faint" />
-              {t}
-            </span>
-          ))}
-        </div>
       </div>
     </section>
   );

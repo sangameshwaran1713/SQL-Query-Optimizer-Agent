@@ -1,4 +1,3 @@
-import React from 'react';
 import { ShieldCheck, Cpu, Zap, BarChart3, Database, KeyRound } from 'lucide-react';
 
 const features = [
