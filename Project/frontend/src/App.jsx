@@ -29,12 +29,6 @@ function AppLayout() {
 
             {/* Nav links */}
             <nav className="hidden sm:flex items-center gap-6">
-              <button
-                onClick={() => navigate('/optimizer-agent')}
-                className="text-sm font-bold text-white bg-brand-primary hover:bg-brand-primaryHover px-4 py-2 rounded-lg shadow-btn transition-all duration-200"
-              >
-                Open Agent Console →
-              </button>
             </nav>
           </div>
         </header>

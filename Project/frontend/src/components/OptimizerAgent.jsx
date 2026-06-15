@@ -830,58 +830,7 @@ ${result.aiNotes}
               </div>
             </div>
           )}
-          {/* 4. Identified bottlenecks suggestions card */}
-          {mode !== 'explain_plan' && (
-            <div className="card p-5 border-brand-border bg-brand-surface">
-              <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-brand-border">
-                <AlertTriangle size={15} className="text-amber-500" />
-                <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Identified Bottlenecks</span>
-              </div>
-              
-              <div className="flex flex-col gap-3">
-                {result.issues.map((issue, i) => {
-                  const details = getStructuredIssue(issue);
-                  const tagColors = {
-                    rose: 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-300',
-                    amber: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-300',
-                    indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-300'
-                  }[details.color] || 'bg-brand-bg border-brand-border text-brand-muted';
 
-                  return (
-                    <div key={i} className="p-3 bg-brand-bg border border-brand-border rounded flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border uppercase shrink-0 ${tagColors}`}>
-                          {details.severity}
-                        </span>
-                        <span className="text-xs font-bold text-brand-text">{details.title}</span>
-                      </div>
-                      <p className="text-xs text-brand-muted font-semibold leading-relaxed pl-0.5">
-                        {details.recommendation}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* 5. Generated index schema script */}
-          {mode !== 'query_only' && mode !== 'explain_plan' && (
-            <div className="card p-5 border-brand-border bg-brand-surface">
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-brand-border">
-                <div className="flex items-center gap-2">
-                  <Database size={15} className="text-emerald-500" />
-                  <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Generated Index Script</span>
-                </div>
-                <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase tracking-wider shadow-inner">
-                  Applied Automatically
-                </span>
-              </div>
-              <pre className="p-3 bg-brand-bg border border-brand-border rounded font-mono text-[11px] text-brand-text font-bold whitespace-pre overflow-x-auto leading-relaxed">
-                {result.indexScript}
-              </pre>
-            </div>
-          )}
 
           {/* 6. AI Agent Recommendations */}
           <div className="card border-brand-border bg-brand-surface overflow-hidden">
