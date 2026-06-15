@@ -403,6 +403,29 @@ The project demonstration video showcases:
 
 ---
 
+# 🌐 Deployment on Render
+
+This project includes a `render.yaml` blueprint to automate the deployment of the React frontend (static site) and the FastAPI backend (web service).
+
+### Automated Setup via Blueprint
+
+1. Go to the [Render Dashboard](https://dashboard.render.com).
+2. Click **Blueprints** -> **New Blueprint Instance**.
+3. Select your repository.
+4. Render will automatically read the `render.yaml` file, detect the backend web service and frontend static site, and pre-configure them.
+5. In the backend settings, configure the environment variable `OLLAMA_BASE_URL` if you want to connect to an external hosted Ollama endpoint (e.g., `http://your-gpu-server-ip:11434`).
+6. Click **Approve** to deploy both services.
+
+### Configurable Environment Variables
+
+- **Backend (FastAPI)**:
+  - `OLLAMA_BASE_URL`: (Optional) URL of the hosted Ollama service. Defaults to `http://localhost:11434`.
+  - `PORT`: Managed automatically by Render.
+- **Frontend (React)**:
+  - `VITE_API_URL`: URL of the deployed FastAPI backend. Injected automatically by the blueprint.
+
+---
+
 # 📜 License
 
 MIT License

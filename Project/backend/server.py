@@ -77,9 +77,20 @@ def optimize_query(req: OptimizeRequest):
 
         elif req.mode == "explain_plan":
             # Mode 3: SQL + Execution Plan Bottleneck analysis
-            if not req.explain_plan.strip():
-                raise HTTPException(status_code=400, detail="Explain plan output is required in explain_plan mode.")
-            result = run_explain_plan_agent(req.sql.strip(), req.explain_plan.strip(), model=selected_model)
+            explain_plan_str = req.explain_plan.strip()
+            if not explain_plan_str:
+                db_path = os.path.join(os.path.dirname(__file__), "demo.db")
+                if os.path.exists(db_path):
+                    from db_utils import validate_sql, run_explain
+                    valid, msg = validate_sql(req.sql.strip(), db_path)
+                    if valid:
+                        explain_plan_str = run_explain(req.sql.strip(), db_path)
+            
+            # Fallback to placeholder if explain plan cannot be generated or wasn't provided
+            if not explain_plan_str:
+                explain_plan_str = "No execution plan supplied."
+                
+            result = run_explain_plan_agent(req.sql.strip(), explain_plan_str, model=selected_model)
             return result
 
         else:
@@ -96,5 +107,6 @@ def optimize_query(req: OptimizeRequest):
         }
 
 if __name__ == "__main__":
-    # Start the server on port 8000
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    # Start the server on dynamic port (standard for cloud environments)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=True)

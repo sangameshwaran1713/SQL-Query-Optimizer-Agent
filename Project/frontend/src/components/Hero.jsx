@@ -13,7 +13,7 @@ export default function Hero({ goToOptimizer }) {
       <div className="max-w-5xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
 
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-950/40 border border-indigo-900/50 text-xs font-semibold text-brand-primary mb-8 shadow-inner">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-xs font-semibold text-brand-primary mb-8 shadow-inner">
           <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
           AI-Powered SQL Optimization · Local & Private
         </div>
@@ -41,8 +41,8 @@ export default function Hero({ goToOptimizer }) {
           </button>
 
           <a
-            href="#features"
-            className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#0F1420] border border-brand-border text-brand-text font-bold text-sm hover:bg-[#151b2a] hover:border-slate-700 transition-all duration-200"
+            href="#how-it-works"
+            className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-brand-surface border border-brand-border text-brand-text font-bold text-sm hover:bg-brand-bg transition-all duration-200"
           >
             How It Works
           </a>

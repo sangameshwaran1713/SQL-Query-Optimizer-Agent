@@ -12,7 +12,7 @@ function AppLayout() {
 
       {/* ── Top Navigation (hidden on optimizer console) ── */}
       {!isOptimizer && (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#0F1420] border-b border-brand-border backdrop-blur-md/95">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-brand-surface/85 border-b border-brand-border backdrop-blur-md/95">
           <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
             {/* Logo */}
             <button

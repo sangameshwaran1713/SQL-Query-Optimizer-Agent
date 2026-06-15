@@ -53,7 +53,7 @@ export default function Pipeline() {
         <div className="relative grid grid-cols-1 md:grid-cols-5 gap-6">
 
           {/* Background Connector Line (only for desktop md+) */}
-          <div className="hidden md:block absolute top-[45px] left-[10%] right-[10%] h-[2px] bg-[#1E293B] z-0" />
+          <div className="hidden md:block absolute top-[45px] left-[10%] right-[10%] h-[2px] bg-brand-border z-0" />
 
           {steps.map((s, i) => (
             <div
@@ -61,12 +61,12 @@ export default function Pipeline() {
               className="relative z-10 flex flex-col items-center text-center group"
             >
               {/* Step number badge / icon */}
-              <div className="w-16 h-16 rounded-2xl bg-[#0F1420] border border-brand-border flex items-center justify-center mb-6 group-hover:border-slate-600 transition-all duration-300 shadow-md">
+              <div className="w-16 h-16 rounded-2xl bg-brand-surface border border-brand-border flex items-center justify-center mb-6 group-hover:border-brand-primary transition-all duration-300 shadow-md">
                 {s.icon}
               </div>
 
               {/* Step counter */}
-              <div className="inline-block text-[10px] font-black tracking-widest text-brand-primary uppercase bg-indigo-950/40 border border-indigo-900/40 px-2 py-0.5 rounded-full mb-3">
+              <div className="inline-block text-[10px] font-black tracking-widest text-brand-primary uppercase bg-brand-primary/10 border border-brand-primary/20 px-2 py-0.5 rounded-full mb-3">
                 Step {s.num}
               </div>
 

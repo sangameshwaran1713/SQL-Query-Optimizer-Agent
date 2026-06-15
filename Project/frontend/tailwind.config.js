@@ -8,16 +8,16 @@ export default {
     extend: {
       colors: {
         brand: {
-          bg:       "#090D16",       // very deep blue-gray dark background
-          surface:  "#0F1420",       // card background
-          border:   "#1E293B",       // slate-800 subtle border
-          primary:  "#6366F1",       // indigo-500 primary action
-          primaryHover: "#4f46e5",   // indigo-600 hover
-          secondary: "#8B5CF6",      // violet-500 secondary
-          secondaryHover: "#7c3aed", // violet-600 hover
-          text:     "#F8FAFC",       // slate-50 bright text
-          muted:    "#94A3B8",       // slate-400 secondary text
-          faint:    "#475569",       // slate-600 muted/placeholder text
+          bg:       "rgb(var(--brand-bg) / <alpha-value>)",
+          surface:  "rgb(var(--brand-surface) / <alpha-value>)",
+          border:   "rgb(var(--brand-border) / <alpha-value>)",
+          primary:  "rgb(var(--brand-primary) / <alpha-value>)",
+          primaryHover: "rgb(var(--brand-primary-hover) / <alpha-value>)",
+          secondary: "rgb(var(--brand-secondary) / <alpha-value>)",
+          secondaryHover: "rgb(var(--brand-secondary-hover) / <alpha-value>)",
+          text:     "rgb(var(--brand-text) / <alpha-value>)",
+          muted:    "rgb(var(--brand-muted) / <alpha-value>)",
+          faint:    "rgb(var(--brand-faint) / <alpha-value>)",
         }
       },
       fontFamily: {

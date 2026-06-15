@@ -22,7 +22,7 @@ export default function OptimizerAgentPage() {
         <OptimizerAgent />
       </div>
 
-      <footer className="border-t border-brand-border bg-[#0F1420] py-4 mt-8">
+      <footer className="border-t border-brand-border bg-brand-surface py-4 mt-8">
         <p className="text-center text-xs text-brand-faint font-semibold">
           © {new Date().getFullYear()} SQL Optimizer Agent
         </p>

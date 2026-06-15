@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   Play, RotateCcw, Zap, Clock,
-  CheckCircle2, AlertTriangle, Download, Database, Cpu, ChevronDown
+  CheckCircle2, AlertTriangle, Download, Database, Cpu, ChevronDown,
+  Sun, Moon
 } from 'lucide-react';
+
+let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+if (API_BASE_URL && !API_BASE_URL.startsWith('http://') && !API_BASE_URL.startsWith('https://')) {
+  API_BASE_URL = `https://${API_BASE_URL}`;
+}
 
 /* ─── Scenario Data ────────────────────────────────────────────── */
 const SCENARIOS = {
@@ -217,19 +223,19 @@ function CodeBlock({ code, variant = 'neutral' }) {
   const [copied, setCopied] = useState(false);
 
   const variantStyles = {
-    neutral:   'bg-[#090D16] border-[#1E293B]',
-    original:  'bg-rose-950/20 border-rose-900/30',
-    optimized: 'bg-emerald-950/20 border-emerald-900/30',
+    neutral:   'bg-brand-bg border-brand-border',
+    original:  'bg-rose-500/10 border-rose-500/20',
+    optimized: 'bg-emerald-500/10 border-emerald-500/20',
   };
 
   return (
     <div className={`rounded-xl border overflow-hidden ${variantStyles[variant]}`}>
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#161B22]/60 border-b border-[#21262D]">
+      <div className="flex items-center justify-between px-4 py-2 bg-brand-surface/80 border-b border-brand-border">
         <div className="flex gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-slate-700" />
-          <span className="w-2 h-2 rounded-full bg-slate-700" />
-          <span className="w-2 h-2 rounded-full bg-slate-700" />
+          <span className="w-2 h-2 rounded-full bg-slate-400/50" />
+          <span className="w-2 h-2 rounded-full bg-slate-400/50" />
+          <span className="w-2 h-2 rounded-full bg-slate-400/50" />
         </div>
         <button
           onClick={() => {
@@ -237,13 +243,13 @@ function CodeBlock({ code, variant = 'neutral' }) {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}
-          className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-slate-200 font-bold transition-colors uppercase bg-[#0F1420] border border-slate-700 px-1.5 py-0.5 rounded"
+          className="flex items-center gap-1 text-[10px] text-brand-muted hover:text-brand-text font-bold transition-colors uppercase bg-brand-surface border border-brand-border px-1.5 py-0.5 rounded"
         >
-          {copied ? <span className="text-emerald-400 font-bold">Copied</span> : 'Copy'}
+          {copied ? <span className="text-emerald-500 font-bold">Copied</span> : 'Copy'}
         </button>
       </div>
       <div className="flex font-mono text-[11px] leading-relaxed">
-        <div className="select-none py-3 px-3.5 text-right text-[#484F58] border-r border-[#21262D] bg-[#161B22] min-w-[2.5rem]">
+        <div className="select-none py-3 px-3.5 text-right text-brand-faint border-r border-brand-border bg-brand-surface/40 min-w-[2.5rem]">
           {(code || '').split('\n').map((_, i) => <div key={i}>{i + 1}</div>)}
         </div>
         <pre className="flex-1 px-4 py-3 whitespace-pre overflow-x-auto" style={{ color: 'inherit' }}>
@@ -295,13 +301,13 @@ export default function OptimizerAgent() {
   useEffect(() => {
     const checkApiStatus = async () => {
       try {
-        const resp = await fetch("http://localhost:8000/api/status");
+        const resp = await fetch(`${API_BASE_URL}/api/status`);
         if (resp.ok) {
           const statusData = await resp.json();
           setApiOnline(statusData.ollama_running);
 
           if (statusData.ollama_running) {
-            const modelsResp = await fetch("http://localhost:8000/api/models");
+            const modelsResp = await fetch(`${API_BASE_URL}/api/models`);
             if (modelsResp.ok) {
               const modelsData = await modelsResp.json();
               setModels(modelsData.models || []);
@@ -368,7 +374,7 @@ export default function OptimizerAgent() {
           model: selectedModel
         };
 
-        const response = await fetch("http://localhost:8000/api/optimize", {
+        const response = await fetch(`${API_BASE_URL}/api/optimize`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -475,11 +481,11 @@ Generated on: ${new Date().toLocaleString()}
 Database Mode: ${modeConfig[mode]?.label || mode}
 Estimated Improvement: ${result.estimatedImprovement || 'N/A'}
 
-## Timing Metrics
+${result.originalSpeed !== null ? `## Timing Metrics
 - **Original Execution Time:** ${result.originalSpeed} ms
 - **Optimized Execution Time:** ${result.optimizedSpeed} ms
 - **Speedup Gain:** ${result.estimatedImprovement}
-
+` : ''}
 ## SQL Query Comparison
 
 ### Original SQL
@@ -546,7 +552,7 @@ ${result.aiNotes}
 
       {/* Mode Selector (Image 2 style with dots) */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-1.5 p-1 bg-[#0F1420] border border-[#1E293B] rounded-xl w-fit">
+        <div className="flex items-center gap-1.5 p-1 bg-brand-surface border border-brand-border rounded-xl w-fit">
           {Object.entries(modeConfig).map(([key, { label, color }]) => {
             const active = mode === key;
             const dotColor = {
@@ -560,8 +566,8 @@ ${result.aiNotes}
                 onClick={() => handleModeChange(key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                   active
-                    ? 'bg-[#1E293B] text-brand-text border border-slate-700'
-                    : 'text-slate-500 hover:text-slate-350'
+                    ? 'bg-brand-border text-brand-text border border-brand-border'
+                    : 'text-brand-muted hover:text-brand-text'
                 }`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
@@ -576,8 +582,8 @@ ${result.aiNotes}
           <span className={`w-1.5 h-1.5 rounded-full ${apiOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'} shrink-0`} />
           <span className={`px-2 py-0.5 rounded border ${
             apiOnline 
-              ? 'text-emerald-400 bg-emerald-950/40 border-emerald-900/60' 
-              : 'text-amber-400 bg-amber-950/40 border-amber-900/60'
+              ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+              : 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20'
           }`}>
             {apiOnline ? 'Ollama: Connected' : 'Ollama: Offline (Sandbox Mode)'}
           </span>
@@ -585,11 +591,11 @@ ${result.aiNotes}
       </div>
 
       {/* Editor Panel Card (Image 2 style) */}
-      <div className="card border-brand-border bg-[#0F1420] overflow-hidden mb-4 shadow-sm">
+      <div className="card border-brand-border bg-brand-surface overflow-hidden mb-4 shadow-sm">
         {/* Editor chrome header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#090D16]/40 border-b border-brand-border">
+        <div className="flex items-center justify-between px-4 py-3 bg-brand-bg/40 border-b border-brand-border">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 font-mono">&gt;_ SQL Query Editor</span>
+            <span className="text-xs font-bold text-brand-muted font-mono">&gt;_ SQL Query Editor</span>
           </div>
           
           <div className="flex items-center gap-3">
@@ -599,7 +605,7 @@ ${result.aiNotes}
                 <select
                   value={scenarioKey}
                   onChange={(e) => handleScenarioChange(e.target.value)}
-                  className="appearance-none text-xs text-brand-text bg-[#0F1420] border border-brand-border rounded-lg pl-3 pr-7 py-1.5 focus:outline-none focus:border-slate-500 cursor-pointer shadow-sm font-semibold"
+                  className="appearance-none text-xs text-brand-text bg-brand-surface border border-brand-border rounded-lg pl-3 pr-7 py-1.5 focus:outline-none focus:border-brand-primary cursor-pointer shadow-sm font-semibold"
                 >
                   {Object.entries(SCENARIOS).map(([k, sc]) => (
                     <option key={k} value={k}>{sc.title}</option>
@@ -615,7 +621,7 @@ ${result.aiNotes}
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="appearance-none text-xs text-brand-text bg-[#0F1420] border border-brand-border rounded-lg pl-3 pr-7 py-1.5 focus:outline-none focus:border-slate-500 cursor-pointer shadow-sm font-semibold"
+                  className="appearance-none text-xs text-brand-text bg-brand-surface border border-brand-border rounded-lg pl-3 pr-7 py-1.5 focus:outline-none focus:border-brand-primary cursor-pointer shadow-sm font-semibold"
                 >
                   {models.map((model) => (
                     <option key={model} value={model}>{model}</option>
@@ -627,10 +633,10 @@ ${result.aiNotes}
 
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
               mode === 'demo_db'
-                ? 'text-emerald-400 border-emerald-900 bg-emerald-950/20'
+                ? 'text-emerald-600 dark:text-emerald-400 border-emerald-500/20 bg-emerald-500/10'
                 : mode === 'query_only'
-                ? 'text-indigo-400 border-indigo-900 bg-indigo-950/20'
-                : 'text-rose-400 border-rose-900 bg-rose-950/20'
+                ? 'text-indigo-600 dark:text-indigo-400 border-indigo-500/20 bg-indigo-500/10'
+                : 'text-rose-600 dark:text-rose-400 border-rose-500/20 bg-rose-500/10'
             }`}>
               {modeConfig[mode].label}
             </span>
@@ -638,8 +644,8 @@ ${result.aiNotes}
         </div>
 
         {/* Textarea code container */}
-        <div className="flex font-mono text-[11px] leading-relaxed relative bg-[#090D16]" style={{ minHeight: 200 }}>
-          <div className="select-none py-4 px-3 text-right text-slate-600 border-r border-[#1E293B] bg-[#0F1420]/50 min-w-[3rem]">
+        <div className="flex font-mono text-[11px] leading-relaxed relative bg-brand-bg" style={{ minHeight: 200 }}>
+          <div className="select-none py-4 px-3 text-right text-brand-muted/70 border-r border-brand-border bg-brand-surface/50 min-w-[3rem]">
             {sqlQuery.split('\n').map((_, i) => <div key={i}>{i + 1}</div>)}
           </div>
           <textarea
@@ -647,7 +653,7 @@ ${result.aiNotes}
             onChange={(e) => setSql(e.target.value)}
             spellCheck={false}
             placeholder={`-- Write your SQL query here\nSELECT * FROM table WHERE condition;`}
-            className="flex-1 px-4 py-4 bg-[#090D16] text-[#F8FAFC] resize-none focus:outline-none placeholder-slate-700 caret-brand-primary font-mono leading-relaxed"
+            className="flex-1 px-4 py-4 bg-brand-bg text-brand-text resize-none focus:outline-none placeholder-brand-muted/50 caret-brand-primary font-mono leading-relaxed"
             style={{ minHeight: 200 }}
           />
         </div>
@@ -655,8 +661,8 @@ ${result.aiNotes}
         {/* EXPLAIN plan input block */}
         {mode === 'explain_plan' && (
           <div className="border-t border-brand-border">
-            <div className="px-4 py-2 bg-[#0F1420]/30 border-b border-brand-border">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">
+            <div className="px-4 py-2 bg-brand-surface/30 border-b border-brand-border">
+              <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider font-mono">
                 EXPLAIN QUERY PLAN Output
               </span>
             </div>
@@ -666,7 +672,7 @@ ${result.aiNotes}
               spellCheck={false}
               rows={4}
               placeholder="Paste your EXPLAIN QUERY PLAN output here..."
-              className="w-full px-4 py-3 text-[11px] font-mono leading-relaxed bg-[#090D16] text-[#94A3B8] resize-none focus:outline-none placeholder-slate-700"
+              className="w-full px-4 py-3 text-[11px] font-mono leading-relaxed bg-brand-bg text-brand-muted resize-none focus:outline-none placeholder-brand-muted/50"
             />
           </div>
         )}
@@ -698,7 +704,7 @@ ${result.aiNotes}
 
       {/* Progress Checklist Log Panel */}
       {running && (
-        <div className="card border-brand-border bg-[#0F1420] p-5 mb-8 shadow-sm">
+        <div className="card border-brand-border bg-brand-surface p-5 mb-8 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-3.5 h-3.5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin shrink-0" />
             <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Executing Optimization Pipeline</span>
@@ -739,49 +745,51 @@ ${result.aiNotes}
           </div>
 
           {/* 1. Timing metrics cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="card p-5 bg-[#0F1420] border-brand-border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Original Speed</span>
-                <Clock size={14} className="text-rose-500" />
+          {result.originalSpeed !== null && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="card p-5 bg-brand-surface border-brand-border">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Original Speed</span>
+                  <Clock size={14} className="text-rose-500" />
+                </div>
+                <div className="text-2xl font-black text-rose-500">
+                  <AnimatedCounter value={result.originalSpeed} decimals={1} suffix=" ms" />
+                </div>
+                <p className="text-[9px] text-brand-muted/70 mt-1 font-semibold">avg over 3 runs</p>
               </div>
-              <div className="text-2xl font-black text-rose-500">
-                <AnimatedCounter value={result.originalSpeed} decimals={1} suffix=" ms" />
-              </div>
-              <p className="text-[9px] text-slate-500 mt-1 font-semibold">avg over 3 runs</p>
-            </div>
 
-            <div className="card p-5 bg-[#0F1420] border-emerald-900/50">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Optimized Speed</span>
-                <CheckCircle2 size={14} className="text-emerald-500" />
+              <div className="card p-5 bg-brand-surface border-emerald-500/30">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider">Optimized Speed</span>
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                </div>
+                <div className="text-2xl font-black text-emerald-500 dark:text-emerald-400">
+                  <AnimatedCounter value={result.optimizedSpeed} decimals={1} suffix=" ms" />
+                </div>
+                <div className="inline-block mt-1 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded">
+                  Index Applied
+                </div>
               </div>
-              <div className="text-2xl font-black text-emerald-400">
-                <AnimatedCounter value={result.optimizedSpeed} decimals={1} suffix=" ms" />
-              </div>
-              <div className="inline-block mt-1 text-[9px] font-bold text-emerald-400 bg-emerald-950/20 border border-emerald-900/40 px-1.5 py-0.2 rounded">
-                Index Applied
-              </div>
-            </div>
 
-            <div className="card p-5 bg-[#0F1420] border-brand-primary/30">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-brand-primary uppercase tracking-wider">Speedup Gain</span>
-                <Zap size={14} className="text-brand-primary" />
+              <div className="card p-5 bg-brand-surface border-brand-primary/30">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-brand-primary uppercase tracking-wider">Speedup Gain</span>
+                  <Zap size={14} className="text-brand-primary" />
+                </div>
+                <div className="text-2xl font-black text-brand-primary">
+                  <AnimatedCounter value={parseFloat(result.estimatedImprovement)} decimals={1} suffix="%" />
+                </div>
+                <p className="text-[9px] text-brand-muted/70 mt-1 font-semibold">faster execution time</p>
               </div>
-              <div className="text-2xl font-black text-brand-primary">
-                <AnimatedCounter value={parseFloat(result.estimatedImprovement)} decimals={1} suffix="%" />
-              </div>
-              <p className="text-[9px] text-slate-500 mt-1 font-semibold">faster execution time</p>
             </div>
-          </div>
+          )}
 
           {/* 2. SQL comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2 px-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Original Query</span>
+                <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Original Query</span>
               </div>
               <CodeBlock code={result.originalSql} variant="original" />
             </div>
@@ -789,7 +797,7 @@ ${result.aiNotes}
             <div>
               <div className="flex items-center gap-2 mb-2 px-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Optimized Query</span>
+                <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Optimized Query</span>
               </div>
               <CodeBlock code={result.optimizedSql} variant="optimized" />
             </div>
@@ -801,11 +809,11 @@ ${result.aiNotes}
               <div>
                 <div className="flex items-center gap-2 mb-2 px-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">
                     {mode === 'explain_plan' ? 'Supplied Explain Plan' : 'Original Explain Plan'}
                   </span>
                 </div>
-                <div className="bg-rose-950/15 border border-rose-900/35 rounded-xl p-4 font-mono text-[11px] text-rose-300 leading-relaxed font-semibold overflow-x-auto whitespace-pre">
+                <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 font-mono text-[11px] text-rose-700 dark:text-rose-300 leading-relaxed font-semibold overflow-x-auto whitespace-pre">
                   {mode === 'explain_plan' ? explainInput : result.explainOriginal}
                 </div>
               </div>
@@ -813,11 +821,11 @@ ${result.aiNotes}
               <div>
                 <div className="flex items-center gap-2 mb-2 px-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">
                     Optimized Explain Plan
                   </span>
                 </div>
-                <div className="bg-emerald-950/15 border border-emerald-900/35 rounded-xl p-4 font-mono text-[11px] text-[#A6E3A1] leading-relaxed font-semibold overflow-x-auto whitespace-pre">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 font-mono text-[11px] text-emerald-600 dark:text-emerald-400 leading-relaxed font-semibold overflow-x-auto whitespace-pre">
                   {result.explainOptimized}
                 </div>
               </div>
@@ -825,8 +833,8 @@ ${result.aiNotes}
           )}
 
           {/* 4. Identified bottlenecks suggestions card */}
-          <div className="card p-5 border-brand-border bg-[#0F1420]">
-            <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-[#1E293B]">
+          <div className="card p-5 border-brand-border bg-brand-surface">
+            <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-brand-border">
               <AlertTriangle size={15} className="text-amber-500" />
               <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Identified Bottlenecks</span>
             </div>
@@ -835,13 +843,13 @@ ${result.aiNotes}
               {result.issues.map((issue, i) => {
                 const details = getStructuredIssue(issue);
                 const tagColors = {
-                  rose: 'bg-rose-950/20 border-rose-900/30 text-rose-300',
-                  amber: 'bg-amber-950/20 border-amber-900/30 text-amber-300',
-                  indigo: 'bg-indigo-950/20 border-indigo-900/30 text-indigo-300'
-                }[details.color] || 'bg-slate-900 border-slate-800 text-slate-300';
+                  rose: 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-300',
+                  amber: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-300',
+                  indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-300'
+                }[details.color] || 'bg-brand-bg border-brand-border text-brand-muted';
 
                 return (
-                  <div key={i} className="p-3 bg-[#090D16] border border-brand-border rounded flex flex-col gap-1.5">
+                  <div key={i} className="p-3 bg-brand-bg border border-brand-border rounded flex flex-col gap-1.5">
                     <div className="flex items-center gap-2">
                       <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border uppercase shrink-0 ${tagColors}`}>
                         {details.severity}
@@ -859,25 +867,25 @@ ${result.aiNotes}
 
           {/* 5. Generated index schema script */}
           {mode !== 'query_only' && (
-            <div className="card p-5 border-brand-border bg-[#0F1420]">
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#1E293B]">
+            <div className="card p-5 border-brand-border bg-brand-surface">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-brand-border">
                 <div className="flex items-center gap-2">
                   <Database size={15} className="text-emerald-500" />
                   <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Generated Index Script</span>
                 </div>
-                <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-950/20 border border-emerald-900/40 px-2 py-0.5 rounded uppercase tracking-wider shadow-inner">
+                <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase tracking-wider shadow-inner">
                   Applied Automatically
                 </span>
               </div>
-              <pre className="p-3 bg-[#090D16] border border-brand-border rounded font-mono text-[11px] text-[#F8FAFC] font-bold whitespace-pre overflow-x-auto leading-relaxed">
+              <pre className="p-3 bg-brand-bg border border-brand-border rounded font-mono text-[11px] text-brand-text font-bold whitespace-pre overflow-x-auto leading-relaxed">
                 {result.indexScript}
               </pre>
             </div>
           )}
 
           {/* 6. AI Agent Recommendations */}
-          <div className="card border-brand-border bg-[#0F1420] overflow-hidden">
-            <div className="px-5 py-3.5 bg-[#090D16]/40 border-b border-brand-border flex items-center gap-2">
+          <div className="card border-brand-border bg-brand-surface overflow-hidden">
+            <div className="px-5 py-3.5 bg-brand-bg/45 border-b border-brand-border flex items-center gap-2">
               <Cpu size={14} className="text-brand-primary" />
               <span className="text-xs font-bold text-brand-text uppercase tracking-wider">AI Agent Recommendations</span>
             </div>
@@ -889,7 +897,7 @@ ${result.aiNotes}
           </div>
 
           {/* 7. Export report */}
-          <div className="card p-5 border-brand-border bg-[#0F1420] flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="card p-5 border-brand-border bg-brand-surface flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="max-w-2xl text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                 <Download size={15} className="text-brand-primary" />
@@ -901,7 +909,7 @@ ${result.aiNotes}
             </div>
             <button
               onClick={handleDownloadReport}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#090D16] border border-brand-border hover:border-brand-primary text-brand-text hover:text-brand-primary font-bold text-xs shadow-sm hover:shadow transition-all duration-200 shrink-0 w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-brand-bg border border-brand-border hover:border-brand-primary text-brand-text hover:text-brand-primary font-bold text-xs shadow-sm hover:shadow transition-all duration-200 shrink-0 w-full sm:w-auto"
             >
               <Download size={13} />
               Download Optimization Report
@@ -916,7 +924,7 @@ ${result.aiNotes}
                 setLogs([]);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-200 font-bold transition-all uppercase tracking-wider border border-brand-border px-4 py-2 rounded-lg bg-[#0F1420] shadow-sm"
+              className="flex items-center gap-2 text-brand-muted hover:text-brand-text font-bold transition-all uppercase tracking-wider border border-brand-border px-4 py-2 rounded-lg bg-brand-surface shadow-sm"
             >
               <RotateCcw size={12} />
               Reset & Start Over
