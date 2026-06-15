@@ -497,8 +497,7 @@ ${result.originalSql}
 \`\`\`sql
 ${result.optimizedSql}
 \`\`\`
-
-${result.explainOriginal && result.explainOriginal !== 'No baseline trace.' ? `## Execution Plan Comparison
+${mode !== 'explain_plan' && result.explainOriginal && result.explainOriginal !== 'No baseline trace.' ? `## Execution Plan Comparison
 
 ### Original Execution Plan
 \`\`\`
@@ -511,9 +510,9 @@ ${result.explainOptimized}
 \`\`\`
 ` : ''}
 
-## Identified Performance Issues
+${mode !== 'explain_plan' ? `## Identified Performance Issues
 ${result.issues.map((issue, idx) => `${idx + 1}. ${issue}`).join('\n')}
-
+` : ''}
 ## AI Recommendations & Explanation
 ${result.aiNotes}
 
@@ -804,7 +803,7 @@ ${result.aiNotes}
           </div>
 
           {/* 3. Explain plans comparison */}
-          {mode !== 'query_only' && (
+          {mode !== 'query_only' && mode !== 'explain_plan' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2 px-1">
@@ -831,42 +830,43 @@ ${result.aiNotes}
               </div>
             </div>
           )}
-
           {/* 4. Identified bottlenecks suggestions card */}
-          <div className="card p-5 border-brand-border bg-brand-surface">
-            <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-brand-border">
-              <AlertTriangle size={15} className="text-amber-500" />
-              <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Identified Bottlenecks</span>
-            </div>
-            
-            <div className="flex flex-col gap-3">
-              {result.issues.map((issue, i) => {
-                const details = getStructuredIssue(issue);
-                const tagColors = {
-                  rose: 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-300',
-                  amber: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-300',
-                  indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-300'
-                }[details.color] || 'bg-brand-bg border-brand-border text-brand-muted';
+          {mode !== 'explain_plan' && (
+            <div className="card p-5 border-brand-border bg-brand-surface">
+              <div className="flex items-center gap-2.5 mb-4 pb-2 border-b border-brand-border">
+                <AlertTriangle size={15} className="text-amber-500" />
+                <span className="text-xs font-bold text-brand-text uppercase tracking-wider">Identified Bottlenecks</span>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                {result.issues.map((issue, i) => {
+                  const details = getStructuredIssue(issue);
+                  const tagColors = {
+                    rose: 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-300',
+                    amber: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-300',
+                    indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-300'
+                  }[details.color] || 'bg-brand-bg border-brand-border text-brand-muted';
 
-                return (
-                  <div key={i} className="p-3 bg-brand-bg border border-brand-border rounded flex flex-col gap-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border uppercase shrink-0 ${tagColors}`}>
-                        {details.severity}
-                      </span>
-                      <span className="text-xs font-bold text-brand-text">{details.title}</span>
+                  return (
+                    <div key={i} className="p-3 bg-brand-bg border border-brand-border rounded flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border uppercase shrink-0 ${tagColors}`}>
+                          {details.severity}
+                        </span>
+                        <span className="text-xs font-bold text-brand-text">{details.title}</span>
+                      </div>
+                      <p className="text-xs text-brand-muted font-semibold leading-relaxed pl-0.5">
+                        {details.recommendation}
+                      </p>
                     </div>
-                    <p className="text-xs text-brand-muted font-semibold leading-relaxed pl-0.5">
-                      {details.recommendation}
-                    </p>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 5. Generated index schema script */}
-          {mode !== 'query_only' && (
+          {mode !== 'query_only' && mode !== 'explain_plan' && (
             <div className="card p-5 border-brand-border bg-brand-surface">
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-brand-border">
                 <div className="flex items-center gap-2">

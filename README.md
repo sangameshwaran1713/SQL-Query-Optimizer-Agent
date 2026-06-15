@@ -208,7 +208,7 @@ ollama pull gemma3
 ## Start Backend
 
 ```bash
-python app.py
+python server.py
 ```
 
 Backend runs on:
