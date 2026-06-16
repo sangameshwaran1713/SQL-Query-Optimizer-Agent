@@ -6,8 +6,6 @@
 
 **Team Name:** Code Hawks
 
-**Challenge:** Infinite Computer Solutions - AI Prototype Challenge
-
 ---
 
 # Purpose of AI Usage

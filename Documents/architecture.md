@@ -22,26 +22,26 @@ The system combines a modern React frontend, FastAPI backend services, and local
 
 ```text
 User
- │
- ▼
+↓
 React Frontend
- │
- ▼
+↓
 FastAPI Backend
- │
- ├── Query Analysis Engine
- │
- ├── Demo Database Engine
- │
- ├── Execution Plan Analyzer
- │
- ├── Report Generator
- │
- ▼
-Ollama LLM
- │
- ▼
-Optimization Recommendations
+↓
+Agent Layer
+↓
+Database Utilities
+↓
+SQLite
+↓
+Prompt Builder
+↓
+Ollama
+↓
+Qwen 2.5 Coder
+↓
+Optimization Results
+↓
+Frontend UI
 ```
 
 ---
@@ -90,7 +90,7 @@ Responsibilities:
 Technology:
 
 * Ollama
-* Llama 3 / Llama 3.2 / Qwen
+* Qwen 2.5 Coder
 
 Responsibilities:
 

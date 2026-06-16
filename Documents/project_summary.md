@@ -8,12 +8,6 @@ SQL Query Optimizer Agent
 
 Code Hawks
 
-## Challenge
-
-Infinite Computer Solutions - AI Prototype Challenge
-
----
-
 # Executive Summary
 
 SQL Query Optimizer Agent is an AI-powered application designed to help developers analyze SQL queries, identify performance bottlenecks, interpret execution plans, and generate optimized query recommendations.
